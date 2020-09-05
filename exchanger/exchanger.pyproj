@@ -23,9 +23,18 @@
   <ItemGroup>
     <Compile Include="exchanger.py" />
     <Compile Include="exchange\Exchange.py" />
+    <Compile Include="tvizbase\api.py" />
+    <Compile Include="tvizbase\base58.py" />
+    <Compile Include="tvizbase\broadcast.py" />
+    <Compile Include="tvizbase\key.py" />
+    <Compile Include="tvizbase\operations.py" />
+    <Compile Include="tvizbase\storage.py" />
+    <Compile Include="tvizbase\types.py" />
+    <Compile Include="tvizbase\ws_client.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="exchange\" />
+    <Folder Include="tvizbase\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="settings.json" />
