@@ -30,8 +30,8 @@ exchange = Exchange(settings, viz=viz, redis=redis)
 try:
     last_block_num = int(redis.get('viz_last_block_num'))
 except:
-    exchange.send_alert('Ошибка чтения custom операции. Скрипт остановлен.')
-    sys.exit()
+    exchange.send_alert('Ошибка чтения из базы данных. Скрипт остановлен.')
+    sys.exit('Ошибка чтения из базы данных. Скрипт остановлен.')
 #Получение и обработка новых блоков каждые 3 секунды
 one_minute = three_minute = datetime.timestamp(datetime.now())
 while (True):

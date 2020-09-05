@@ -23,6 +23,9 @@
   <ItemGroup>
     <Compile Include="exchanger.py" />
     <Compile Include="exchange\Exchange.py" />
+    <Compile Include="initial_script.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tvizbase\api.py" />
     <Compile Include="tvizbase\base58.py" />
     <Compile Include="tvizbase\broadcast.py" />
