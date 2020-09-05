@@ -86,7 +86,7 @@ class Exchange():
             abi=USDT_ABI
         )
         self.decimals = self.usdt_contract.functions.decimals().call()
-        self.tgbot = Bot('1149250396:AAGOll6RQZDm8PdrvjWHswdqy3ph0XsjqgQ')
+        self.tgbot = Bot(self.sett['tg_token'])
 
     def change_usdt_to_viz(self, usdt_amount, user_wallet):
         """
