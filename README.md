@@ -24,7 +24,7 @@ And run exchange:
 
     $ venv/bin/python ./exchanger.py
 
-###Install Telegram bot
+### Install Telegram bot
 
     $ cd ..
     $ cp ./telegramBot /path/to/your/website/
