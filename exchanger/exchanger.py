@@ -32,6 +32,8 @@ try:
 except:
     exchange.send_alert('Ошибка чтения из базы данных. Скрипт остановлен.')
     sys.exit('Ошибка чтения из базы данных. Скрипт остановлен.')
+#Публикация настроек из файла в блокчейн
+exchange.post_new_rate(exchange.viz_balance, exchange.usdt_balance)
 #Получение и обработка новых блоков каждые 3 секунды
 one_minute = three_minute = datetime.timestamp(datetime.now())
 while (True):

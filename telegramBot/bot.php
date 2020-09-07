@@ -94,7 +94,15 @@ try
 										$bot->sendMessage($message->getFrom()->getId(), $message->getFrom()->getId());
 									break;
 									case 'settings':
-										$messageText = 'Какую настройку меняем?';
+										$messageText = "Какую настройку меняем?\n\n1 - минимальное количество viz, которое клиент может продать.\n\n" .
+										"2 - минимальное количество USDT, которое клиент может продать.\n\n" .
+										"3 - максимальный объём сделки при покупке viz клиентом. Выражается как доля от общего количества viz в кошельках обменника.\n\n" .
+										"4 - максимальный объём сделки при продаже viz клиентом. Выражается как доля от общего количества USDT в кошельках обменника.\n\n" .
+										"5 - комиссия за обмен, взимается в USDT.\n\n" .
+										"6 - комиссия за создание временного кошелька в блокчейне Ethereum. Взимается в viz. Должна быть больше 0.\n\n" .
+										"7 - период ожидания поступления USDT на временный кошелёк при покупке viz клиентом. Выражается в блоках блокчейна VIZ.\n\n" .
+										"8 - период, после которого начинается удаление данных о временном кошельке Ethereum. Выражается в блоках блокчейна VIZ.\n\n" .
+										"9 - коэффициент эластичности цены viz в зависимости от спроса. Чем ниже коэффициент, тем более резко меняется цена.";
 										$sett_keyboard = TELEGRAM_BOT_KEYBOARDS['settings'];
 										for ($i = 0, $keys = array(); $i < sizeof($sett_keyboard); $i++)
 										{
@@ -164,7 +172,8 @@ try
 						$settings = json_decode(file_get_contents(VPEXCHANGE_SETTINGS_FILE), true);
 						$settings[$bot->change_param_name] = $new_val;
 						$res = file_put_contents(VPEXCHANGE_SETTINGS_FILE, json_encode($settings));
-						$messageText = 'Новое значение параметра ' . $bot->change_param_name . ': ' . $new_val;
+						$messageText = 'Новое значение параметра ' . $bot->change_param_name . ': ' . $new_val . "\n\nНе забудьте после внесения всех " .
+						"изменений перезапустить обменник  кнопкой \"Старт\" в главном меню.";
 						$sett_keyboard = TELEGRAM_BOT_KEYBOARDS['settings'];
 						for ($i = 0, $keys = array(); $i < sizeof($sett_keyboard); $i++)
 						{
@@ -181,7 +190,8 @@ try
 						$settings = json_decode(file_get_contents(VPEXCHANGE_SETTINGS_FILE), true);
 						$settings[$bot->change_param_name] = $new_val;
 						$res = file_put_contents(VPEXCHANGE_SETTINGS_FILE, json_encode($settings));
-						$messageText = 'Новое значение параметра ' . $bot->change_param_name . ': ' . $new_val;
+						$messageText = 'Новое значение параметра ' . $bot->change_param_name . ': ' . $new_val . "\n\nНе забудьте после внесения всех " .
+						"изменений перезапустить обменник  кнопкой \"Старт\" в главном меню.";
 						$sett_keyboard = TELEGRAM_BOT_KEYBOARDS['settings'];
 						for ($i = 0, $keys = array(); $i < sizeof($sett_keyboard); $i++)
 						{

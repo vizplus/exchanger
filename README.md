@@ -15,6 +15,7 @@
 ### Using:
 
     $ mv settings.json.example settings.json
+    $ chmod 666 settings.json   #access for web server
     
 Edit file settings.json and run initial script for post first custom operation in VIZ blockchain:
 

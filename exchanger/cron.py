@@ -30,8 +30,8 @@ except:
 redis.delete('tgbot_command')
 #Старт или остановка обменника
 if tgbot_command == 'start':
-    os.system('systemctl start exchanger.service')
+    os.system(settings['exchange_start_cmd'])
     exchange.send_alert('Обменник запущен.')
 elif tgbot_command == 'stop':
-    os.system('systemctl stop exchanger.service')
+    os.system(settings['exchange_stop_cmd'])
     exchange.send_alert('Обменник остановлен.')
