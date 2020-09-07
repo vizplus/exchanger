@@ -21,6 +21,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="cron.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="exchanger.py" />
     <Compile Include="exchange\Exchange.py" />
     <Compile Include="initial_script.py">
