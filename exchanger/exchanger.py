@@ -73,7 +73,7 @@ while (True):
                         else:
                             exchange.send_alert('Неверно указан кошелек ETH.')
                     #Создание и публикация нового кошелька для пользователя при
-                    #обменен USDT на VIZ
+                    #обмене USDT на VIZ
                     elif (op[1]['to'] == exchange.sett['rate_account']['login']
                           and 
                           decimal.Decimal(op[1]['amount'][0:-4]).quantize(
@@ -114,7 +114,7 @@ while (True):
                 if expiration_block_num < last_block_num:
                     exchange.redis.delete(key)
                     exchange.send_alert(
-                        'Начало удаление информации о кошельке ' + wallet
+                        'Начало удаления информации о кошельке ' + wallet
                     )
                     exchange.delete_wallet_info(wallet)
         #События каждые 3 минуты
