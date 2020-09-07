@@ -244,7 +244,7 @@ class Exchange():
             else:
                 self.redis.delete(key)
                 self.delete_wallet_info(wallet)
-                viz_ligin = self.redis.get(wallet + ':viz_login').decode('utf-8')
+                viz_login = self.redis.get(wallet + ':viz_login').decode('utf-8')
                 self.send_alert(
                     'На горячий кошелек поступили USDT по сделке с ' +
                     viz_login + '.'
@@ -330,7 +330,7 @@ class Exchange():
                 (10 ** self.decimals)
             ).quantize(decimal.Decimal('1.' + '0'*self.decimals))
             if balance > 0:
-                viz_ligin = self.redis.get(
+                viz_login = self.redis.get(
                     wallet + ':viz_login'
                 ).decode('utf-8')
                 self.send_alert('На ' + wallet + ' поступили ' + balance +
