@@ -448,7 +448,11 @@ class Exchange():
                     ),
                     'usdt_fee': str(self.sett['usdt_fee']),
                     'eth_wallet_cost': str(self.sett['eth_wallet_cost']),
-                    'viz_wallet': self.sett['viz_wallet']['login']
+                    'viz_wallet': self.sett['viz_wallet']['login'],
+                    'viz_wallet_cold': self.sett['viz_wallet_cold']['login'],
+                    'eth_wallet': self.sett['eth_wallet']['login'],
+                    'eth_wallet_cold': self.sett['eth_wallet_cold']['login'],
+                    'bird_account': self.sett['bird_account']['login']
                 }
             ], 
             self.sett['rate_account']['login'], 
@@ -473,7 +477,11 @@ class Exchange():
             ) + "\n" +
             'usdt_fee: ' + str(self.sett['usdt_fee']) + "\n" +
             'eth_wallet_cost: ' + str(self.sett['eth_wallet_cost']) + "\n" +
-            'viz_wallet: ' + self.sett['viz_wallet']['login']
+            'viz_wallet: ' + self.sett['viz_wallet']['login'] + "\n" +
+            'viz_wallet_cold: ' + self.sett['viz_wallet_cold']['login'] + "\n" +
+            'eth_wallet: ' + self.sett['eth_wallet']['login'] + "\n" +
+            'eth_wallet_cold: ' + self.sett['eth_wallet_cold']['login'] + "\n" +
+            'bird_account: ' + self.sett['bird_account']['login']
         )
         self.send_alert(msg_text)
 

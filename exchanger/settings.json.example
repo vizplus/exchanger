@@ -17,9 +17,15 @@
     "login": "0x...",
     "key": "..."
   },
+  "eth_wallet_cold": {
+    "login": "0x..."
+  },
   "viz_wallet": {
     "login": "",
     "key": "5..."
+  },
+  "viz_wallet_cold": {
+    "login": "..."
   },
   "rate_account": {
     "login": "",
