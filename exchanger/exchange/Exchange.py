@@ -18,22 +18,22 @@ class Exchange():
         Инициализация класса и настроек
 
         :param dict sett: настройки класса
-            Decimal exchange_ratio - коэфицент используемый для расчета
+            Decimal exchange_ratio - коэффициент, используемый для расчета
                                      обменного курса
             Decimal viz_limit_min - минимальный лимит для продажи VIZ
             float viz_limit_percent - максимальный лимит для продажи VIZ в
-                                      процентах от общего их количество в фонде
-            int viz_precision - количество знаков посля запятой для округления 
+                                      процентах от общего их количества в фонде
+            int viz_precision - количество знаков после запятой для округления 
                                 VIZ
             Decimal usdt_limit_min - минимальный лимит для продажи USDT
             float usdt_limit_percent - максимальный лимит для продажи USDT в
-                                       процентах от общего их количество в фонде
-            int usdt_precision - количество знаков посля запятой для округления
+                                       процентах от общего их количества в фонде
+            int usdt_precision - количество знаков после запятой для округления
                                  USDT
             float usdt_fee - комиссия обменника в USDT
             Decimal eth_wallet_cost - комиссия обменника в VIZ при создании
                                       кошелька в сети ETH 
-            int rate_precision - количество знаков посля запятой для округления
+            int rate_precision - количество знаков после запятой для округления
                                  обменного курса
             int expiration_block_count - количество блоков из сети VIZ, которые
                                          даются для совершения сделки по продаже
@@ -47,7 +47,7 @@ class Exchange():
             dict eth_wallet - словарь с данными о горячем кошельке ETH
                 str login - адрес кошелька
                 str key - ключ кошелька
-            dict viz_wallet - словать с данными о горячем кошельке VIZ
+            dict viz_wallet - словарь с данными о горячем кошельке VIZ
                 str login - логин кошелька
                 str key - активный ключ кошелька
             dict rate_account - словарь с данными о кошельке VIZ для размещения
@@ -92,8 +92,8 @@ class Exchange():
         """
         Обмен USDT на VIZ
 
-        :param Decimal usdt_amount: количество полученный от пользователя USDT
-        :param str user_wallet: кошелек на который поступили USDT
+        :param Decimal usdt_amount: количество полученных от пользователя USDT
+        :param str user_wallet: кошелек, на который поступили USDT
         """
         if usdt_amount >= self.sett['usdt_limit_min']:
             if usdt_amount > self.sett['usdt_limit_max']:
@@ -139,8 +139,8 @@ class Exchange():
         """
         Обмен VIZ на USDT
 
-        :param float viz_amount: количество полученный от пользователя VIZ
-        :param str user_wallet: кошелек на который переводить USDT
+        :param float viz_amount: количество полученных от пользователя VIZ
+        :param str user_wallet: кошелек, на который переводить USDT
         """
         viz_amount = decimal.Decimal(viz_amount)
         usdt_amount = decimal.Decimal(
@@ -159,7 +159,7 @@ class Exchange():
             self.sett['eth_wallet']['key'],
             medium_gas=True
         )
-        self.send_alert('На горячий кошелек поступили ' + viz_amount +
+        self.send_alert('На горячий кошелёк поступили ' + viz_amount +
                         ' VIZ. На ' + user_wallet + ' отправлено ' +
                         usdt_amount + ' USDT.')
         self.post_new_rate(
@@ -252,10 +252,10 @@ class Exchange():
 
     def create_new_address(self, login, block_num):
         """
-        Сощдание нового адреса в сети ETH
+        Создание нового адреса в сети ETH
 
-        :param str login: логин из сети VIZ для которого создается адрес 
-        :param int block_num: номер блока после которого закрывается обмен
+        :param str login: логин из сети VIZ, для которого создается адрес 
+        :param int block_num: номер блока, после которого закрывается обмен
         """
         keccak = sha3.keccak_256()
         priv = SigningKey.generate(curve=SECP256k1)
@@ -289,9 +289,9 @@ class Exchange():
 
         :param str wallet: адрес кошелька для удаления
         :returns: Результат удаления. Возвращает True в случае успешного
-                  удаления. Если на кошельке остались какие-то средства
+                  удаления. Если на кошельке остались какие-то средства,
                   возвращает False, при этом ставит метку в базе о
-                  необходимости вывода остатков с этого кошелька.
+                  необходимости вывода остатков из этого кошелька.
         :rtype: bool
         """
         self.redis.delete(wallet + ':not_null_balance')
@@ -545,8 +545,8 @@ class Exchange():
         :param str _to: адрес получателя
         :param str _from: адрес отправителя
         :param str private_key: приватный ключ отправителя
-        :param int eth_for_gas: количество ETH используемого для оплаты газа.
-                                По-умолчанию 0
+        :param int eth_for_gas: количество ETH, используемого для оплаты газа.
+                                По умолчанию 0
         :param bool medium_gas: стратегия по газу. Если True, то указывается
                                 высокая цена газа. По-умолчанию False
         :returns: Номер созданной транзакции в сети ETH
