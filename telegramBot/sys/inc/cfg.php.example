@@ -1,0 +1,48 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
+define('REDIS_HOST', '127.0.0.1');
+define('REDIS_DB', 0);
+define('WWW_DIR', '/path/to/your/website/');
+define('VPEXCHANGE_SETTINGS_FILE', '/path/to/exchanger/exchanger/settings.json');
+define('TELEGRAM_BOT_TOKEN', '...');
+define('TELEGRAM_BOT_KEYBOARDS', [
+    'main' => [
+        0 => [
+            ['text' => 'Изменить настройки', 'action' => 'settings', 'admin' => 1],
+            ['text' => 'Статус', 'action' => 'statusExchange', 'admin' => 1],
+            ['text' => 'Старт', 'action' => 'startExchange', 'admin' => 1],
+            ['text' => 'Стоп', 'action' => 'stopExchange', 'admin' => 1]
+        ]
+    ],
+    'settings' => [
+        0 => [
+            ['text' => 'viz_limit_min', 'action' => 'change_int', 'param' => 'viz_limit_min', 'admin' => 1],
+            ['text' => 'usdt_limit_min', 'action' => 'change_int', 'param' => 'usdt_limit_min', 'admin' => 1],
+            ['text' => 'exchange_ratio', 'action' => 'change_float', 'param' => 'exchange_ratio', 'admin' => 1]
+        ],
+        1 => [
+            ['text' => 'usdt_fee', 'action' => 'change_int', 'param' => 'usdt_fee', 'admin' => 1],
+            ['text' => 'eth_wallet_cost', 'action' => 'change_int', 'param' => 'eth_wallet_cost', 'admin' => 1],
+            ['text' => 'viz_limit_percent', 'action' => 'change_float', 'param' => 'viz_limit_percent', 'admin' => 1]
+        ],
+        2 => [
+            ['text' => 'expiration_block_count', 'action' => 'change_int', 'param' => 'expiration_block_count', 'admin' => 1],
+            ['text' => 'additional_expiration_count', 'action' => 'change_int', 'param' => 'additional_expiration_count', 'admin' => 1],
+            ['text' => 'usdt_limit_percent', 'action' => 'change_float', 'param' => 'usdt_limit_percent', 'admin' => 1]
+        ],
+        3 => [
+            ['text' => 'Назад', 'action' => 'back', 'admin' => 0]
+        ]
+    ],
+    'settings_cancel' => [
+        0 => [
+            ['text' => 'Вернуться в настройки', 'action' => 'settings', 'admin' => 1]
+        ]
+    ]
+]);
+define('TELEGRAM_BOT_ADMINS', [123, 321, ...]);
+
+?>

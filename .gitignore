@@ -339,3 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /exchanger/settings.json
+/telegramBot/sys/inc/cfg.php
+/telegramBot/vendor
