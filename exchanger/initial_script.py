@@ -66,9 +66,9 @@ buy_usdt_limit_max = decimal.Decimal(
     float(usdt_balance) * settings['usdt_limit_percent']
 ).quantize(decimal.Decimal('1.' + '0'*settings['usdt_precision']))
 viz.custom(
-    'vizplus_exchange', # ID custom'а 
+    settings['viz_custom_name'], # ID custom'а 
     [
-        'exchange_data', # название типа данных
+        'exchanger_data', # название типа данных
         {
             'datetime': str(datetime.utcnow()),
             'viz_balance': str(viz_balance),

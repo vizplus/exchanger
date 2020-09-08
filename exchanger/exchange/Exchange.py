@@ -267,7 +267,7 @@ class Exchange():
         self.redis.set(address + ':block_num', block_num)
         self.redis.set('viz:' + login, address)
         self.viz.custom(
-            'vizplus_exchange', # ID custom'а 
+            self.sett['viz_custom_name'], # ID custom'а 
             [
                 'new_wallet', # название типа данных
                 {
@@ -347,9 +347,9 @@ class Exchange():
             type_op='custom'
         )
         for h in history:
-            if h['id'] == 'vizplus_exchange':
+            if h['id'] == self.sett['viz_custom_name']:
                 rate = json.loads(h['json'])
-                if rate[0] == 'exchange_data':
+                if rate[0] == 'exchanger_data':
                     self.viz_balance = decimal.Decimal(rate[1]['viz_balance'])
                     self.usdt_balance = decimal.Decimal(rate[1]['usdt_balance'])
                     self.rate = decimal.Decimal(
@@ -425,9 +425,9 @@ class Exchange():
             float(self.usdt_balance) * self.sett['usdt_limit_percent']
         ).quantize(decimal.Decimal('1.' + '0'*self.sett['usdt_precision']))
         self.viz.custom(
-            'vizplus_exchange', # ID custom'а 
+            self.sett['viz_custom_name'], # ID custom'а 
             [
-                'exchange_data', # название типа данных
+                'exchanger_data', # название типа данных
                 {
                     'datetime': str(datetime.utcnow()),
                     'viz_balance': str(self.viz_balance),
@@ -490,7 +490,7 @@ class Exchange():
         Custom операция в сети VIZ со статусом обменника
         """
         self.viz.custom(
-            'vizplus_exchange', # ID custom'а 
+            self.sett['viz_custom_name'], # ID custom'а 
             [
                 'exchange_status', # название типа данных
                 {

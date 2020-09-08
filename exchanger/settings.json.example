@@ -12,6 +12,7 @@
   "expiration_block_count": 1200,
   "additional_expiration_count": 28800,
   "redis_db": 8,
+  "viz_custom_name": "...",
   "eth_node": "",
   "eth_wallet": {
     "login": "0x...",
