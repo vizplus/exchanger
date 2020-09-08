@@ -75,6 +75,7 @@ class Exchange():
         ).quantize(decimal.Decimal('1.' + '0'*self.sett['viz_precision']))
         self.viz = kwargs.pop('viz')
         self.redis = kwargs.pop('redis')
+        self.tgbot = Bot(self.sett['tg_token'])
         self.get_exchange_rate()
         self.web3 = Web3(Web3.HTTPProvider(self.sett['eth_node']))
         self.web3.eth.setGasPriceStrategy(slow_gas_price_strategy)
@@ -86,7 +87,6 @@ class Exchange():
             abi=USDT_ABI
         )
         self.decimals = self.usdt_contract.functions.decimals().call()
-        self.tgbot = Bot(self.sett['tg_token'])
 
     def change_usdt_to_viz(self, usdt_amount, user_wallet):
         """
