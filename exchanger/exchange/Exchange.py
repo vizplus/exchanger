@@ -492,7 +492,7 @@ class Exchange():
         self.viz.custom(
             self.sett['viz_custom_name'], # ID custom'а 
             [
-                'exchange_status', # название типа данных
+                'exchanger_status', # название типа данных
                 {
                     'datetime': str(datetime.utcnow()),
                     'status': 'OK'
