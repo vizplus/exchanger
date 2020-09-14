@@ -8,7 +8,7 @@
     $ pip3 install --upgrade requests
     $ python3 -m venv venv
     $ . venv/bin/activate
-    $ pip install redis web3 bitshares sha3
+    $ pip install redis web3 bitshares pysha3
     $ pip install python-telegram-bot --upgrade
     $ deactivate
 

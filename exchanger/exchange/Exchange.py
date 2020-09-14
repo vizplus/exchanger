@@ -7,6 +7,7 @@ from datetime import datetime
 
 #Библиотека для работы с БЧ ETH
 from web3 import Web3, middleware
+from web3.exceptions import TransactionNotFound
 from web3.gas_strategies.time_based import medium_gas_price_strategy
 from web3.gas_strategies.time_based import slow_gas_price_strategy
 #Библиотека для работы с Telegram
@@ -121,7 +122,7 @@ class Exchange():
                 self.sett['viz_wallet']['key']
             )
             self.send_alert('Из ' + self.sett['viz_wallet']['login'] + ' на ' + 
-                            viz_login + ' переведено ' + viz_amount +
+                            viz_login + ' переведено ' + str(viz_amount) +
                             ' VIZ. Сделка завершена.')
             self.post_new_rate(
                 self.viz_balance - viz_amount, 
@@ -143,29 +144,44 @@ class Exchange():
         :param str user_wallet: кошелек, на который переводить USDT
         """
         viz_amount = decimal.Decimal(viz_amount)
+        #usdt_amount = decimal.Decimal(
+        #    self.usdt_balance * 
+        #    (1 - (1 - viz_amount / self.viz_balance) ** 
+        #     decimal.Decimal(1 / self.sett['exchange_ratio'])
+        #    )
+        #) - self.sett['usdt_fee']
         usdt_amount = decimal.Decimal(
             self.usdt_balance * 
-            (1 - (1 - viz_amount / self.viz_balance) ** 
-             decimal.Decimal(1 / self.sett['exchange_ratio'])
+            ((1 + viz_amount / (self.viz_balance + viz_amount)) ** 
+              decimal.Decimal(1 / self.sett['exchange_ratio']) - 1
+            ) / (
+                (1 + viz_amount / (self.viz_balance + viz_amount)) ** 
+                decimal.Decimal(1 / self.sett['exchange_ratio'])
             )
         ) - self.sett['usdt_fee']
         usdt_amount = decimal.Decimal(usdt_amount).quantize(
             decimal.Decimal('1.' + '0'*self.sett['usdt_precision'])
         )
-        txn_id = self.transfer_usdt(
-            usdt_amount,
-            user_wallet,
-            self.sett['eth_wallet']['login'],
-            self.sett['eth_wallet']['key'],
-            medium_gas=True
-        )
-        self.send_alert('На горячий кошелёк поступили ' + viz_amount +
-                        ' VIZ. На ' + user_wallet + ' отправлено ' +
-                        usdt_amount + ' USDT.')
-        self.post_new_rate(
-            self.viz_balance + viz_amount, 
-            self.usdt_balance - usdt_amount
-        )
+        self.send_alert('На горячий кошелёк поступили ' + str(viz_amount) +
+                        ' VIZ. На ' + str(user_wallet) + ' отправлено ' +
+                        str(usdt_amount) + ' USDT.')
+        txn_id = ''
+        try:
+            txn_id = self.transfer_usdt(
+                usdt_amount,
+                user_wallet,
+                self.sett['eth_wallet']['login'],
+                self.sett['eth_wallet']['key'],
+                medium_gas=True
+            )
+        except Exception as e:
+            self.send_alert('Ошибка при отправке транзакции на ' + 
+                            str(user_wallet) + "\n\n" + str(e))
+        else:
+            self.post_new_rate(
+                self.viz_balance + viz_amount, 
+                self.usdt_balance - usdt_amount - self.sett['usdt_fee']
+            )
         return txn_id
 
     def claim_balance(self):
@@ -244,7 +260,7 @@ class Exchange():
             else:
                 self.redis.delete(key)
                 self.delete_wallet_info(wallet)
-                viz_login = self.redis.get(wallet + ':viz_login').decode('utf-8')
+                viz_login = self.redis.get(wallet+':viz_login').decode('utf-8')
                 self.send_alert(
                     'На горячий кошелек поступили USDT по сделке с ' +
                     viz_login + '.'
@@ -297,6 +313,8 @@ class Exchange():
         self.redis.delete(wallet + ':not_null_balance')
         usdt_balance = self.usdt_contract.functions.balanceOf(wallet).call()
         eth_balance = self.web3.eth.getBalance(self.sett['eth_wallet']['login'])
+        self.send_alert('Кошелёк ' + wallet + '. USDT ' + str(usdt_balance) +
+                        ' ETH ' + str(eth_balance) + '.')
         if usdt_balance > 0:
             if (usdt_balance / (10 ** self.decimals) > float(
                                                         self.sett['usdt_fee'])
@@ -308,7 +326,7 @@ class Exchange():
         if eth_balance > 0:
             self.redis.set(wallet + ':not_null_balance', '1')
         if usdt_balance == 0 and eth_balance == 0:
-            private_key = self.redis.get(wallet + ':private_key').decode('utf-8')
+            private_key = self.redis.get(wallet+':private_key').decode('utf-8')
             self.send_alert('Информация о кошельке ' + wallet +
                             ' с приватным ключом ' + private_key + ' удалена.')
             for key in self.redis.scan_iter(wallet + '*'):
@@ -333,8 +351,8 @@ class Exchange():
                 viz_login = self.redis.get(
                     wallet + ':viz_login'
                 ).decode('utf-8')
-                self.send_alert('На ' + wallet + ' поступили ' + balance +
-                                ' USDT для ' + viz_login + '.')
+                self.send_alert('На ' + wallet + ' поступили ' + str(balance) +
+                                ' USDT от ' + viz_login + '.')
                 self.change_usdt_to_viz(balance, wallet)
 
     def get_exchange_rate(self):
@@ -539,10 +557,13 @@ class Exchange():
         )
         self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
         self.send_alert('Отправлено ' + str(self.web3.fromWei(amount, 'ether'))+
-                        ' ETH с ' + _from + ' на ' + _to + '. Газ: ' + gas +
-                        '. Цена газа: ' + self.web3.eth.gasPrice +
-                        '. Баланс отправителя до операции: ' +
-                        str(self.web3.eth.getBalance(_from)) + ' ETH.')
+                        ' ETH с ' + _from + ' на ' + _to + '. Газ: ' + str(gas)+
+                        '. Цена газа: ' + 
+                        str(self.web3.fromWei(self.web3.eth.gasPrice, 'gwei')) +
+                        ' GWEI. Баланс отправителя до операции: ' +
+                        str(self.web3.fromWei(
+                                self.web3.eth.getBalance(_from), 'ether')
+                        ) + ' ETH.')
         return self.web3.toHex(self.web3.keccak(signed_txn.rawTransaction))
 
     def transfer_usdt(self, amount, _to, _from, private_key, **kwargs):
@@ -568,6 +589,7 @@ class Exchange():
         _from = self.web3.toChecksumAddress(_from)
         nonce = self.web3.eth.getTransactionCount(_from)
         amount *= (10 ** self.decimals)
+        gas = gasPrice = 0
         if eth_for_gas == 0:
             usdt_txn = self.usdt_contract.functions.transfer(
                 _to, 
@@ -595,10 +617,13 @@ class Exchange():
         )
         self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
         self.send_alert('Отправлено ' + str(amount / (10 ** self.decimals)) +
-                        ' USDT с ' + _from + ' на ' + _to + '. Газ: ' + gas +
-                        '. Цена газа: ' + gasPrice +
-                        '. Баланс отправителя до операции: ' +
-                        str(self.web3.eth.getBalance(_from)) + ' ETH.')
+                        ' USDT с ' + _from + ' на ' + _to + '. Газ: ' +
+                        str(gas) + '. Цена газа: ' +
+                        str(self.web3.fromWei(gasPrice, 'gwei')) +
+                        ' GWEI. Баланс отправителя до операции: ' +
+                        str(self.web3.fromWei(
+                                self.web3.eth.getBalance(_from), 'ether')
+                        ) + ' ETH.')
         if medium_gas:
             self.web3.eth.setGasPriceStrategy(slow_gas_price_strategy)
         return self.web3.toHex(self.web3.keccak(signed_txn.rawTransaction))

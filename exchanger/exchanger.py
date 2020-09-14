@@ -69,12 +69,20 @@ while (True):
                                     viz_amount, 
                                     eth_wallet
                                 )
-                                exchange.send_alert('Сделка с ' + op[1]['from']+
-                                                    'завершена.')
+                                exchange.send_alert(
+                                    'Сделка с ' + op[1]['from'] + ' завершена.'
+                                )
                             else:
-                                exchange.send_alert('Неверное количество VIZ.')
+                                exchange.send_alert(
+                                    'От ' + op[1]['from'] + ' поступило ' +
+                                    str(viz_amount) + ' VIZ. Меньше ' +
+                                    'минимально необходимой суммы.'
+                                )
                         else:
-                            exchange.send_alert('Неверно указан кошелек ETH.')
+                            exchange.send_alert(
+                                'Неверно указан кошелек ETH в переводе от ' +
+                                op[1]['from'] + '.'
+                            )
                     #Создание и публикация нового кошелька для пользователя при
                     #обмене USDT на VIZ
                     elif (op[1]['to'] == exchange.sett['rate_account']['login']
@@ -93,8 +101,8 @@ while (True):
                             viz.transfer(
                                 op[1]['from'],
                                 exchange.sett['eth_wallet_cost'],
-                                self.sett['rate_account']['login'],
-                                self.sett['rate_account']['key']
+                                exchange.sett['rate_account']['login'],
+                                exchange.sett['rate_account']['key']
                             )
         new_time = datetime.timestamp(datetime.now())
         #Ежеминутная проверка кошельков в сети ETH
@@ -110,10 +118,11 @@ while (True):
                 wallet = key.decode('utf-8')
                 i = wallet.find(':')
                 wallet = wallet[0:i]
-                expiration_block_num = (int(exchange.redis.get(key)) + 
-                                        exchange.sett['expiration_block_count'] + 
-                                        exchange.sett['additional_expiration_count']
-                                       )
+                expiration_block_num = (
+                    int(exchange.redis.get(key)) + 
+                    exchange.sett['expiration_block_count'] + 
+                    exchange.sett['additional_expiration_count']
+                )
                 if expiration_block_num < last_block_num:
                     exchange.redis.delete(key)
                     exchange.send_alert(
